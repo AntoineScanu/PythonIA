@@ -6,8 +6,8 @@ class Robot:
     def __init__(self, vide: bool):
         self.brasvide = vide
 
-    def tenir(self, cube: Cube):
-        cube.estTenu()
+    def tenir(self, cube: Cube, etat):
+        cube.estTenu(etat)
         self.brasvide = False
 
     def poser(self, cube: Cube, support: Optional[Cube] = None):

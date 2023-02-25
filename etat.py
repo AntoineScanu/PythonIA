@@ -5,7 +5,7 @@ from typing import List
 
 
 class Etat:
-    def __init__(self, cubes: List[Cube], robot: Robot):
+    def __init__(self, cubes: dict, robot: Robot):
         self.cubes = cubes
         self.robot = robot
 
@@ -16,7 +16,7 @@ class Etat:
         self.cubes.remove(cube)
 
     def afficherEtat(self):
-        for c in self.cubes:
-            c.afficherCube()
-        print("Robot : " + str(self.robot.brasvide))
+        for nom, cube in self.cubes.items():
+            cube.afficherCube()
+        print("Robot bras vide : " + str(self.robot.brasvide))
         print('-------------------------')
