@@ -8,10 +8,10 @@ from noeud import *
 #On définit l'heuristique par  rapport au nombre de cube ou d'element dans l'état final :   6 – ( SUR (A,B) + SUR (B,C) + SURTABLE(C) )
 
 def heuristique(noeudActuel):
-    CsurTable = next((3 if n.surTable else -3 for n in noeudActuel.cubes if n.lettre == "C"), 0)
+    CsurTable = next((2 if n.surTable else -2 for n in noeudActuel.cubes if n.lettre == "C"), 0)
     b_surC = next((2 if n.sous and n.sous.lettre == "B" else -2 for n in noeudActuel.cubes if n.lettre == "C"), 0)
     a_surB = next((1 if n.sur and n.sur.lettre == "B" else -1 for n in noeudActuel.cubes if n.lettre == "A"), 0)
-    return 6 - (CsurTable + b_surC + a_surB)
+    return 5 - (CsurTable + b_surC + a_surB)
 
 #Si les conditions sont remplis, on effectue la prochaine operation du bras pour chaque cube du noeud actuel 
 def genererFils(noeudActuel):

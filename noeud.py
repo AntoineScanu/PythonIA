@@ -1,7 +1,7 @@
 from cube import *
 
 class Noeud:
-    def __init__(self, robot, cubes, h=6, g=0, pere=None):
+    def __init__(self, robot, cubes, h=5, g=0, pere=None):
         # Initialisation des attributs de la classe
         self.robot = robot
         self.cubes = cubes
