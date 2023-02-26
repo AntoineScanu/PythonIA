@@ -1,45 +1,43 @@
 class Cube:
-    def __init__(self, nom: str, tenu: bool, libre: bool, surtable: bool, sur: str):
-        self.nom = nom
-        self.tenu = tenu
-        self.libre = libre
-        self.surtable = surtable
-        self.sur = sur
+    def __init__(self, lettre, surTable=True, sur=None):
+        # Initialisation des attributs de la classe
+        self.lettre = lettre # lettre associée au cube
+        self.surTable = surTable # indique si le cube est sur la table ou non
+        self.sur = sur # cube sur lequel est posé le cube actuel
+        self.libre = True # indique si le cube est libre ou non
+        self.sous = None # cube posé sur le cube actuel
 
-    def estTenu(self, etat):
-        self.tenu = True
-        self.libre = False
-        self.surtable = False
-        if self.sur != None:
-            etat.cubes[self.sur].libre = True
-        else:
-            self.sur = None
+        # Vérification si le cube est posé sur un autre cube ou non
+        if sur is not None: 
+            # Si le cube est posé sur un autre cube
+            self.sur = sur # on définit le cube sur lequel est posé le cube actuel
+            self.surTable = False # le cube n'est plus sur la table
+            sur.sous = self # le cube actuel est posé sur le cube sur lequel il est posé
+            sur.libre = False # le cube sur lequel est posé le cube actuel n'est plus libre
 
-    def estSurtable(self):
-        self.tenu = False
-        self.libre = True
-        self.surtable = True
-        self.sur = None
-
-    def poseSur(self, cube: 'Cube'):
-        self.tenu = False
-        self.libre = True
-        self.surtable = False
-        self.sur = cube.nom
+  
+    def mettreSur(self, cube):
+        """Met le cube actuel sur un autre cube"""
+        self.sur = cube
+        cube.sous = self
         cube.libre = False
 
-    def afficherCube(self):
-        cube = "Cube " + self.nom + \
-            " [tenu: " + str(self.tenu) + " , libre: " + str(self.libre) + \
-            ", surtable: " + str(self.surtable) + ", sur: "
-
-        if self.sur == None and self.tenu == False:
-            cube += "Table"
-        elif self.tenu == True:
-            cube += "Rien"
+    def __str__(self):
+    #Retourne une chaîne de caractères décrivant le cube"""
+        if self.sur is None:
+            sur_cube = 'aucun'
         else:
-            cube += self.sur
+           sur_cube = self.sur.lettre
+        if self.libre:
+            libre = 'libre'
+        else:
+            libre = 'occupe'
+        return f'Cube {self.lettre} ({libre}), sur le cube {sur_cube}'
 
-        cube += "]"
+    def __eq__(self, other):
+        # Vérifie si l'objet other est bien un Cube
+        if not isinstance(other, Cube):
+            return False
 
-        print(cube)
+        # Vérifie l'égalité des lettres, de la position sur table et de la position sur un autre cube
+        return (self.lettre == other.lettre and self.surTable == other.surTable and self.sur == other.sur)
