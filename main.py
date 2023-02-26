@@ -25,8 +25,7 @@ def genererFils(noeudActuel):
             noeud.pere = noeudActuel
             noeudActuel.fils.append(noeud)
             fils.append(noeud)
-            print("R1")
-            #print(noeud)
+            print("R1 : le cube est sur la table et libre, le robot prend le cube")
         elif cube.sur is not None and cube.libre and noeudActuel.robot.brasVide:
             # R2
             noeud = copy.deepcopy(noeudActuel)
@@ -35,7 +34,7 @@ def genererFils(noeudActuel):
             noeud.pere = noeudActuel
             noeudActuel.fils.append(noeud)
             fils.append(noeud)
-            print("R2")
+            print("R2 : le cube est sur un autre cube et libre, le robot prend le cube")
         elif not noeudActuel.robot.brasVide and noeudActuel.robot.occupant == cube:
             # R3
             noeud = copy.deepcopy(noeudActuel)
@@ -44,7 +43,7 @@ def genererFils(noeudActuel):
             noeud.pere = noeudActuel
             noeudActuel.fils.append(noeud)
             fils.append(noeud)
-            print("R3")
+            print("R3 : Le robot tient un cube et le dépose sur la table")
         elif not noeudActuel.robot.brasVide and noeudActuel.robot.occupant != cube and cube.libre:
             # R4
             noeud = copy.deepcopy(noeudActuel)
@@ -52,7 +51,7 @@ def genererFils(noeudActuel):
             noeud.h = heuristique(noeud)
             noeud.pere = noeudActuel
             noeudActuel.fils.append(noeud)
-            print("R4")
+            print("R4 : Le robot tient un cube et le dépose sur un autre cube libre")
             fils.append(noeud)
     return fils
 

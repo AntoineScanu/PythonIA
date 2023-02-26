@@ -6,86 +6,74 @@ from noeud import *
 
 #Pour chaque etat du noeud final non rempli, on ajoute 1
 def heuristique(noeudActuel):
-    count = 0
+    count = 5
     
     for n in noeudActuel.cubes:
         if n.lettre == "A":
-            if n.libre == False:
-                count += 1
+            if n.libre == True:
+                count -= 1
             if n.sur != None:
-                if n.sur.lettre != "B":
-                    count += 1
-            else:
-                count += 1
+                if n.sur.lettre == "B":
+                    count -= 1
         if n.lettre == "B":
-            if n.libre == True:
-                count +=1
             if n.sur != None:
-                if n.sur.lettre != "C":
-                    count += 1
-            else:
-                count += 1
+                if n.sur.lettre == "C":
+                    count -= 1
         if n.lettre == "C":
-            if n.libre == True:
-                count +=1
-            if n.surTable == False:
-                count += 1
-    
-    if noeudActuel.robot.brasVide == False:
-        count += 1
-    
+            if n.surTable == True:
+                count -= 1
+    if noeudActuel.robot.brasVide == True:
+        count -= 1
+    print("Heuristique noeudActuel : "+str (count))
     return count
+
 
 
 #Pour chaque cube du noeudActuel, si certaines conditions sont remplies, on effectue l'opération du robot et on crée le nouveau noeud
 def genererFils(noeudActuel):
     fils = []
-    
-    #for n in noeudActuel.cubes:
-    i = 0
-    while i < len(noeudActuel.cubes):
-        #R1
-        if(noeudActuel.cubes[i].surTable == True and noeudActuel.cubes[i].libre == True and noeudActuel.robot.brasVide == True):
+    for i, cube in enumerate(noeudActuel.cubes):
+        if cube.surTable and cube.libre and noeudActuel.robot.brasVide:
+            # R1
             noeud = copy.deepcopy(noeudActuel)
-            noeud.tenirCubeSurTableR1(noeud.cubes[i])
+            noeud.tenirCubeSurTable(noeud.cubes[i])
             noeud.h = heuristique(noeud)
             noeud.pere = noeudActuel
             noeudActuel.fils.append(noeud)
             fils.append(noeud)
-            print("R1")
+            print("R1 : le cube est sur la table et libre, le robot prend le cube")
             #print(noeud)
-        #R2
-        if(noeudActuel.cubes[i].sur != None and noeudActuel.cubes[i].libre == True and noeudActuel.robot.brasVide == True):
+        elif cube.sur is not None and cube.libre and noeudActuel.robot.brasVide:
+            # R2
             noeud = copy.deepcopy(noeudActuel)
-            noeud.tenirCubeSurYR2(noeud.cubes[i])
+            noeud.tenirCubeSurY(noeud.cubes[i])
             noeud.h = heuristique(noeud)
             noeud.pere = noeudActuel
             noeudActuel.fils.append(noeud)
             fils.append(noeud)
-            print("R2")
-        #R3
-        if(noeudActuel.robot.brasVide == False and noeudActuel.robot.occupant == noeudActuel.cubes[i]):
+            print("R2 : le cube est sur un autre cube et libre, le robot prend le cube")
+        elif not noeudActuel.robot.brasVide and noeudActuel.robot.occupant == cube:
+            # R3
             noeud = copy.deepcopy(noeudActuel)
-            noeud.poseCubeSurTableR3()
+            noeud.poseCubeSurTable()
             noeud.h = heuristique(noeud)
             noeud.pere = noeudActuel
             noeudActuel.fils.append(noeud)
             fils.append(noeud)
-            print("R3")
-        #R4
-        if(noeudActuel.robot.brasVide == False and noeudActuel.robot.occupant != noeudActuel.cubes[i]):
-            if(noeudActuel.cubes[i].libre == True):
-                noeud = copy.deepcopy(noeudActuel)
-                noeud.poseCubeSurCubeR4(noeud.cubes[i])
-                noeud.h = heuristique(noeud)
-                noeud.pere = noeudActuel
-                noeudActuel.fils.append(noeud)
-                print("R4")
-        i += 1
-   
+            print("R3 : Le robot tient un cube et le dépose sur la table")
+        elif not noeudActuel.robot.brasVide and noeudActuel.robot.occupant != cube and cube.libre:
+            # R4
+            noeud = copy.deepcopy(noeudActuel)
+            noeud.poseCubeSurCube(noeud.cubes[i])
+            noeud.h = heuristique(noeud)
+            noeud.pere = noeudActuel
+            noeudActuel.fils.append(noeud)
+            print("R4 : Le robot tient un cube et le dépose sur un autre cube libre")
+            fils.append(noeud)
     return fils
 
-#Algo A*
+#L'algo A*
+#Initialisation des variables ouvert (liste de noeuds à explorer), ferme (liste des noeuds explorés), g (coût de chemin actuel) et it (nombre d'itérations).
 def algorithme(noeudRacine,noeudBut):
     #init des tableaux OUVERT et FERME
     ouvert = [noeudRacine]
@@ -119,7 +107,7 @@ def algorithme(noeudRacine,noeudBut):
             check = False
             for n2 in ouvert:
                 if n2 == n:
-                    print('trouve ds ouvert')
+                    print('trouvé dans ouvert')
                     if(n.g < n2.g):
                         ouvert.remove(n2)
                         ouvert.append(n)
@@ -129,7 +117,7 @@ def algorithme(noeudRacine,noeudBut):
             if check == False:
                 for n2 in ferme:
                       if n2 == n:
-                        print('trouve ds ferme')
+                        print('trouvé dans fermé')
                         check = True
                         break
             #Si le fils n'est ni dans Ouvert ni dans Ferme, on l'ajoute dans Ouvert
@@ -141,15 +129,17 @@ def algorithme(noeudRacine,noeudBut):
     return None
 
 
+
 def main() :
     noeudRacine = buildTree()
+    noeudRechercher = noeudBut()
+
     print('Noeud de départ : \n')
     print(noeudRacine)
     print('Noeud but : \n')
-    noeudRechercher = noeudBut()
     print(noeudRechercher)
     print(algorithme(noeudRacine,noeudRechercher))
-    print("Algorithme realise !")
+    print("Algorithme realise")
 
     
 main()
