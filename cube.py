@@ -25,14 +25,14 @@ class Cube:
     def __str__(self):
     #Retourne une chaîne de caractères décrivant le cube"""
         if self.sur is None:
-            sur_cube = 'aucun'
+            sur_cube = 'table'
         else:
            sur_cube = self.sur.lettre
         if self.libre:
             libre = 'libre'
         else:
             libre = 'occupe'
-        return f'Cube {self.lettre} ({libre}), sur le cube {sur_cube}'
+        return f'Cube {self.lettre} ({libre}), sur {sur_cube}'
 
     def __eq__(self, other):
         # Vérifie si l'objet other est bien un Cube
