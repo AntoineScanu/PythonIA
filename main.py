@@ -5,13 +5,26 @@ from robot import *
 from noeud import *
 
 
-#On définit l'heuristique par  rapport au nombre de cube ou d'element dans l'état final :   6 – ( SUR (A,B) + SUR (B,C) + SURTABLE(C) )
+#On définit l'heuristique par  rapport au nombre de cube ou d'element dans l'état final :   5 – ( SUR (A,B) + SUR (B,C) + SURTABLE(C) )
 
 def heuristique(noeudActuel):
-    CsurTable = next((2 if n.surTable else -2 for n in noeudActuel.cubes if n.lettre == "C"), 0)
-    b_surC = next((2 if n.sous and n.sous.lettre == "B" else -2 for n in noeudActuel.cubes if n.lettre == "C"), 0)
-    a_surB = next((1 if n.sur and n.sur.lettre == "B" else -1 for n in noeudActuel.cubes if n.lettre == "A"), 0)
-    return 5 - (CsurTable + b_surC + a_surB)
+    surTable = 0
+    b_surC = 0
+    a_surB = 0
+    
+    # boucle à travers tous les cubes de l'état actuel
+    for n in noeudActuel.cubes:
+        if n.lettre == "C":
+            # si le cube est sur la table, ajouter 2 à surTable, sinon soustraire 2
+            surTable = 2 if n.surTable else -2
+            # si le cube a un cube en dessous et que ce cube est B, ajouter 2 à b_surC, sinon soustraire 2
+            b_surC = 2 if n.sous and n.sous.lettre == "B" else -2
+        if n.lettre == "A":
+            # si le cube a un cube au-dessus et que ce cube est B, ajouter 1 à a_surB, sinon soustraire 1
+            a_surB = 1 if n.sur and n.sur.lettre == "B" else -1
+    
+    # retourne la somme des valeurs avec un ajustement final de 5
+    return 5 - (surTable + b_surC + a_surB)
 
 #Si les conditions sont remplis, on effectue la prochaine operation du bras pour chaque cube du noeud actuel 
 def genererFils(noeudActuel):
