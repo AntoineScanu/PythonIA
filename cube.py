@@ -17,13 +17,13 @@ class Cube:
 
   
     def mettreSur(self, cube):
-        """Met le cube actuel sur un autre cube"""
+    #Met le cube actuel sur un autre cube
         self.sur = cube
         cube.sous = self
         cube.libre = False
 
     def __str__(self):
-    #Retourne une chaîne de caractères décrivant le cube"""
+    #Retourne une chaîne de caractères décrivant le cube
         if self.sur is None:
             sur_cube = 'table'
         else:
@@ -38,6 +38,5 @@ class Cube:
         # Vérifie si l'objet other est bien un Cube
         if not isinstance(other, Cube):
             return False
-
         # Vérifie l'égalité des lettres, de la position sur table et de la position sur un autre cube
         return (self.lettre == other.lettre and self.surTable == other.surTable and self.sur == other.sur)

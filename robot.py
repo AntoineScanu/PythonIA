@@ -1,7 +1,7 @@
 from cube import *
 class Robot:
     def __init__(self, occupant=None):
-        # Constructeur de la classe Robot, prenant en paramètre un objet cube ou None
+        # Constructeur de la classe Robot, prenant en paramètre un cube ou None
         self.occupant = occupant
         # La propriété 'occupant' stocke l'objet cube actuellement pris par le robot
         self.brasVide = occupant is None
